@@ -82,7 +82,7 @@ namespace Pregunta2.Clases
                 posicionRight.X = posicionRight.X + speed;
                 if (posicionRight.X >= 650)
                 {
-                    posicionRight.X = -50;
+                    posicionRight.X = -120;
                 }
             
                 animacion(gameTime);

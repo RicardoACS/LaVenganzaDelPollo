@@ -63,6 +63,7 @@ namespace Pregunta2
         List<Clases.ProyectilEnemigo> listaPiedraHumano;
         //PajaroLeft
         Clases.PajaroLeft pajaroLeft = new Clases.PajaroLeft();
+        Clases.PajaroRight pajaroRight = new Clases.PajaroRight();
         public Game1()
         {
             //Creacion de listas
@@ -121,6 +122,7 @@ namespace Pregunta2
             MediaPlayer.Play(music.bgMusica);
             //Inicio Pajaro
             pajaroLeft.LoadContent(Content);
+            pajaroRight.LoadContent(Content);
         }
 
 
@@ -287,9 +289,11 @@ namespace Pregunta2
                             posicionChicken.Y = pantallaHeight - animacionActual.Height;
                         pajaroLeft.Update(gameTime);
                         pajaroLeft.animacion(gameTime);
+                        pajaroRight.Update(gameTime);
+                        pajaroRight.animacion(gameTime);
                         crearEnemigos(gameTime);
                         updateHuevos();
-                        if (vida == 0 || barraVida.Width == 0)
+                        if (vida <= 0 || barraVida.Width <= 0)
                         {
                             MediaPlayer.Stop();
                             gameMenu = Estados.GameOver;
@@ -351,7 +355,9 @@ namespace Pregunta2
                         {
                             e.draw(spriteBatch);
                         }
+                        //Dibujo Pajaro
                         pajaroLeft.Draw(spriteBatch);
+                        pajaroRight.Draw(spriteBatch);
                         //Carga de enemigos
                         loadEnemyRight();
                         loadEnemyLeft();

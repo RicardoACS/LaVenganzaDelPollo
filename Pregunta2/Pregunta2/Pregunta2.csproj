@@ -78,6 +78,7 @@
     <Compile Include="Clases\Huevo.cs" />
     <Compile Include="Clases\Musica.cs" />
     <Compile Include="Clases\PajaroLeft.cs" />
+    <Compile Include="Clases\PajaroRight.cs" />
     <Compile Include="Clases\ProyectilEnemigo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

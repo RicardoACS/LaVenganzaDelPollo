@@ -82,7 +82,7 @@ namespace Pregunta2.Clases
                 posicionleft.X = posicionleft.X - speed;
                 if (posicionleft.X <= 0)
                 {
-                    posicionleft.X = 700;
+                    posicionleft.X = 800;
                 }
             
                 animacion(gameTime);

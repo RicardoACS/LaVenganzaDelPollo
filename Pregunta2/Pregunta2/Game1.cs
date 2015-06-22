@@ -16,12 +16,14 @@ namespace Pregunta2
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        //Inicio Juego Estados
         public enum Estados
         {
             menu,
             juego,
             GameOver
         }
+        //Inicio de variable
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D chickenRight, chickenLeft, chickenRightDisparo, chickenLeftDisparo, animacionActual, huevoSprite;
@@ -33,6 +35,7 @@ namespace Pregunta2
         Vector2 velocidad;
         Rectangle Colision;
         int vida,dañoEnemigo;
+
         //Animacion
         float elapsed;
         float delay = 200f;
@@ -41,7 +44,7 @@ namespace Pregunta2
         float delayHuevo = 20;
         List<Clases.Huevo> listaHuevosChicken;
         //Fondo
-        Clases.Fondo f = new Clases.Fondo();
+        Clases.Fondo bg = new Clases.Fondo();
         //EnemyRight
         List<Clases.Enemy> listEnemyRight = new List<Clases.Enemy>();
         //EnemyLeft
@@ -53,19 +56,27 @@ namespace Pregunta2
         int pantallaWidth;
         int pantallaHeight;
         //Musica
-        Clases.Musica m = new Clases.Musica();
+        Clases.Musica music = new Clases.Musica();
         //primer estado
         Estados gameMenu = Estados.menu;
-
+        //Proyectil Humano
+        List<Clases.ProyectilEnemigo> listaPiedraHumano;
+        //PajaroLeft
+        Clases.PajaroLeft pajaroLeft = new Clases.PajaroLeft();
         public Game1()
         {
+            //Creacion de listas
             listaHuevosChicken = new List<Clases.Huevo>();
+            listaPiedraHumano = new List<Clases.ProyectilEnemigo>();
+            // Tamaño de la pantalla
             graphics = new GraphicsDeviceManager(this);
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = 801;
             graphics.PreferredBackBufferHeight = 601;
+            //Nombre del juego
             this.Window.Title = "La Venganza del Pollo";
             Content.RootDirectory = "Content";
+            //Valores de la variables a usar
             vida = 200;
             dañoEnemigo = 20;
             posicionVida = new Vector2(50, 50);
@@ -73,10 +84,11 @@ namespace Pregunta2
             gameOver = null;
         }
 
-     
         protected override void Initialize()
         {
+            
             destRect = new Rectangle(100, 100, 100, 188);
+            pajaroLeft.Initialize();
             base.Initialize();
         }
 
@@ -84,21 +96,31 @@ namespace Pregunta2
         {
              
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            //Sprite Mr.Chicken
             chickenRight = Content.Load<Texture2D>("ChickenRight");
             seguimientoChicken = new Vector2(30,40);
             chickenLeft = Content.Load<Texture2D>("ChickenLeft");
             huevoSprite = Content.Load<Texture2D>("huevoGrande");
             chickenRightDisparo = Content.Load<Texture2D>("ChickenRightDisparo");
             chickenLeftDisparo = Content.Load<Texture2D>("ChickenLeftDisparo");
+            //Sprite Barra de vida
             barraVida = Content.Load<Texture2D>("BarraVida");
+            //Sprite Menu Juego
             welcome = Content.Load<Texture2D>("Entrada");
+            //Sprite Game Over
             gameOver = Content.Load<Texture2D>("GameOver");
+            //AnimacionActual, es el cual toma los Sprite de Mr.Chicken
             animacionActual = chickenRight;
-            f.LoadContent(Content);
+            //Sprite Background
+            bg.LoadContent(Content);
+            //Porte de la pantalla
             pantallaWidth = GraphicsDevice.Viewport.Width + 290;
             pantallaHeight = GraphicsDevice.Viewport.Height + 170;
-            m.loadContetent(Content);
-            MediaPlayer.Play(m.bgMusica);
+            //Inicio de la musica
+            music.loadContetent(Content);
+            MediaPlayer.Play(music.bgMusica);
+            //Inicio Pajaro
+            pajaroLeft.LoadContent(Content);
         }
 
 
@@ -249,19 +271,29 @@ namespace Pregunta2
                             velocidad.Y = 0f;
                         }
                         if (posicionChicken.X <= 0)
-                        { posicionChicken.X = 0; }
-                        if (posicionChicken.X + animacionActual.Width >= pantallaWidth)
-                            posicionChicken.X = pantallaWidth - animacionActual.Width;
-                        if (posicionChicken.Y <= 0)
-                        { posicionChicken.Y = 0; }
-                        if (posicionChicken.Y + animacionActual.Height >= pantallaHeight)
-                            posicionChicken.Y = pantallaHeight - animacionActual.Height;
-                        if (vida == 0 || barraVida.Width == 0)
-                        {
-                            gameMenu = Estados.GameOver;
+                        { 
+                            posicionChicken.X = 0;
                         }
+                        if (posicionChicken.X + animacionActual.Width >= pantallaWidth)
+                           
+                            posicionChicken.X = pantallaWidth - animacionActual.Width;
+
+                        if (posicionChicken.Y <= 0)
+                        { 
+                            posicionChicken.Y = 0; 
+                        }
+                        if (posicionChicken.Y + animacionActual.Height >= pantallaHeight)
+                            
+                            posicionChicken.Y = pantallaHeight - animacionActual.Height;
+                        pajaroLeft.Update(gameTime);
+                        pajaroLeft.animacion(gameTime);
                         crearEnemigos(gameTime);
                         updateHuevos();
+                        if (vida == 0 || barraVida.Width == 0)
+                        {
+                            MediaPlayer.Stop();
+                            gameMenu = Estados.GameOver;
+                        }
                         destRect = new Rectangle((int)posicionChicken.X, (int)posicionChicken.Y, 100, 188);
                     }
                     break;
@@ -290,33 +322,46 @@ namespace Pregunta2
             {
                 case Estados.menu:
                     {
-                        f.draw(spriteBatch);
+                        //Dibujo BG menu
+                        bg.draw(spriteBatch);
+                        //Dibujo Foto menu
                         spriteBatch.Draw(welcome,new Vector2(0,0),Color.White);
                     }
                     break;
                 case Estados.juego:
                     {
-                        f.draw(spriteBatch);
+                        //Dibujo BG
+                        bg.draw(spriteBatch);
+                        //Dibujo Mr.Chicken
                         spriteBatch.Draw(animacionActual, destRect, sourceRect, Color.White);
+                        //Dibujo Barra de vida
                         spriteBatch.Draw(barraVida, rectVida, Color.White);
+                        //Dibujo Huevo
                         foreach (Clases.Huevo b in listaHuevosChicken)
                         {
                             b.Draw(spriteBatch);
                         }
+                        //Dibujo enemigo Right
                         foreach (Clases.Enemy e in listEnemyRight)
                         {
                             e.draw(spriteBatch);
                         }
+                        //Dibujo enemigo Left
                         foreach (Clases.Enemyleft e in listEnemyLeft)
                         {
                             e.draw(spriteBatch);
                         }
+                        pajaroLeft.Draw(spriteBatch);
+                        //Carga de enemigos
                         loadEnemyRight();
                         loadEnemyLeft();
+                        
+                        
                     }
                     break;
                 case Estados.GameOver:
                     {
+                        //Dibujo Foto GameOver
                         spriteBatch.Draw(gameOver, new Vector2(0, 0), Color.White);
                     }
                     break;
@@ -333,8 +378,8 @@ namespace Pregunta2
         {
             if (listEnemyRight.Count() < 1)
             {
-                listEnemyRight.Add(new Clases.Enemy(Content.Load<Texture2D>("hombreRight"), new Vector2(-100, 465), Content.Load<Texture2D>("huevoGrande")));
-                //listEnemyRight.Add(new Clases.Enemy(Content.Load<Texture2D>("hombreRight"), new Vector2(-900, 465), Content.Load<Texture2D>("huevoGrande")));
+                listEnemyRight.Add(new Clases.Enemy(Content.Load<Texture2D>("hombreRight"), new Vector2(-100, 465), Content.Load<Texture2D>("piedra")));
+                
             }
 
             for (int i = 0; i < listEnemyRight.Count; i++)
@@ -346,12 +391,12 @@ namespace Pregunta2
                 }
             }
         }
+
         public void loadEnemyLeft()
         {
             if (listEnemyLeft.Count() < 1)
             {
-                listEnemyLeft.Add(new Clases.Enemyleft(Content.Load<Texture2D>("hombreLeft"), new Vector2(700, 465), Content.Load<Texture2D>("huevoGrande")));
-                //listEnemyLeft.Add(new Clases.Enemyleft(Content.Load<Texture2D>("hombreLeft"), new Vector2(1200, 465), Content.Load<Texture2D>("huevoGrande")));
+                listEnemyLeft.Add(new Clases.Enemyleft(Content.Load<Texture2D>("hombreLeft"), new Vector2(700, 465), Content.Load<Texture2D>("piedra")));   
             }
 
             for (int i = 0; i < listEnemyLeft.Count; i++)
@@ -373,12 +418,12 @@ namespace Pregunta2
                     vida -= 10;
                     e.isVisible = false;
                 }
-                for (int i = 0; i < e.listHuevo.Count; i++)
+                for (int i = 0; i < e.listaPiedra.Count; i++)
                 {
-                    if (Colision.Intersects(e.listHuevo[i].colisionHuevo))
+                    if (Colision.Intersects(e.listaPiedra[i].colisionProyectil))
                     {
                         vida -= dañoEnemigo;
-                        e.listHuevo[i].isVisible = false;
+                        e.listaPiedra[i].isVisible = false;
                     }
                 }
                 for (int i = 0; i < listaHuevosChicken.Count; i++)
@@ -399,12 +444,12 @@ namespace Pregunta2
                     vida -= 10;
                     el.isVisible = false;
                 }
-                for (int i = 0; i < el.listHuevo.Count; i++)
+                for (int i = 0; i < el.listPiedra.Count; i++)
                 {
-                    if (Colision.Intersects(el.listHuevo[i].colisionHuevo))
+                    if (Colision.Intersects(el.listPiedra[i].colisionProyectil))
                     {
                         vida -= dañoEnemigo;
-                        el.listHuevo[i].isVisible = false;
+                        el.listPiedra[i].isVisible = false;
                     }
                 }
                 for (int i = 0; i < listaHuevosChicken.Count; i++)
@@ -418,5 +463,6 @@ namespace Pregunta2
                 el.update(gameTime);
             }
         }
+        
     }
 }

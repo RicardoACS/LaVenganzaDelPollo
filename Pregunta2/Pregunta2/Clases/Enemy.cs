@@ -14,20 +14,21 @@ namespace Pregunta2.Clases
 {
     class Enemy
     {
+        //Creacion Sprit Personaje
         public Rectangle colisionRight;
         Texture2D hombreRight, disparoHombre;
         Vector2 posicionRight = new Vector2(0,500);
         Vector2 posicionleft = new Vector2(600, 0);
         Rectangle sourceRect;
         Rectangle destRect;
-        float rotacion;
-        int speed, delayHuevo=150;
+        //Creacion para Sprit moviemiento y delay del disparo
+        int speed, delayPiedra=150;
         float elapsed;
         float delay = 200f;
         int frames = 0;
-        public bool colision, destruido, isVisible;
+        public bool isVisible;
         Random random = new Random();
-        public List<Clases.Huevo> listHuevo;
+        public List<Clases.ProyectilEnemigo> listaPiedra;
         float randX, randY;
 
         public Enemy(Texture2D newTexture, Vector2 newPosicion)
@@ -41,12 +42,12 @@ namespace Pregunta2.Clases
         }
         public Enemy(Texture2D newTexture, Vector2 newPosicion, Texture2D huevo)
         {
-            listHuevo = new List<Huevo>();
+            listaPiedra = new List<Clases.ProyectilEnemigo>();
             posicionRight = newPosicion;
             hombreRight = newTexture;
             disparoHombre = huevo;
             isVisible = true;
-            delayHuevo = 150;
+            delayPiedra = 150;
             speed = 2;
         }
 
@@ -97,51 +98,51 @@ namespace Pregunta2.Clases
             {
                 //spriteBatch.Draw(hombreLeft, posicion, null, Color.White, rotacion, origen, 1.0f, SpriteEffects.None, 0f);  
                 spriteBatch.Draw(hombreRight, destRect, sourceRect, Color.White);
-                foreach (Clases.Huevo h in listHuevo)
+                foreach (Clases.ProyectilEnemigo p in listaPiedra)
                 {
-                    h.Draw(spriteBatch);
+                    p.Draw(spriteBatch);
                 }
             }
         }
         public void updateHuevos()
         {
-            foreach (Clases.Huevo h in listHuevo)
+            foreach (Clases.ProyectilEnemigo p in listaPiedra)
             {
 
-                h.colisionHuevo = new Rectangle((int)h.posicion.X, (int)h.posicion.Y, h.textura.Width, h.textura.Height);
-                h.posicion.X = h.posicion.X + h.speed;
+                p.colisionProyectil = new Rectangle((int)p.posicion.X, (int)p.posicion.Y, p.textura.Width, p.textura.Height);
+                p.posicion.X = p.posicion.X + p.speed;
 
-                if (h.posicion.Y >= 950)
-                    h.isVisible = false;
+                if (p.posicion.Y >= 950)
+                    p.isVisible = false;
 
             }
-            for (int i = 0; i < listHuevo.Count; i++)
+            for (int i = 0; i < listaPiedra.Count; i++)
             {
-                if (!listHuevo[i].isVisible)
+                if (!listaPiedra[i].isVisible)
                 {
-                    listHuevo.RemoveAt(i);
+                    listaPiedra.RemoveAt(i);
                     i--;
                 }
             }
         }
         public void disparoEnemigo()
         {
-            if (delayHuevo >= 0)
-                delayHuevo--;
-            if (delayHuevo <= 0)
+            if (delayPiedra >= 0)
+                delayPiedra--;
+            if (delayPiedra <= 0)
             {
-                Clases.Huevo h = new Huevo(disparoHombre);
-                h.posicion = new Vector2(posicionleft.X - hombreRight.Width / 2 - hombreRight.Width / 2, posicionleft.Y + 500);
-                //h.posicion = new Vector2(0, 465);
-                h.isVisible = true;
+                Clases.ProyectilEnemigo p = new Clases.ProyectilEnemigo(disparoHombre);
+                p.posicion = new Vector2(posicionleft.X - hombreRight.Width / 2 - hombreRight.Width / 2, posicionleft.Y + 500);
+                //p.posicion = new Vector2(0, 465);
+                p.isVisible = true;
 
-                if (listHuevo.Count() < 20)
+                if (listaPiedra.Count() < 20)
                 {
-                    listHuevo.Add(h);
+                    listaPiedra.Add(p);
                 }
             }
-            if (delayHuevo == 0)
-                delayHuevo = 150;
+            if (delayPiedra == 0)
+                delayPiedra = 100;
         }
     }
 }

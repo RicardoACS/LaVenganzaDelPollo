@@ -42,6 +42,7 @@ namespace Pregunta2.Clases
 
         protected void UnloadContent()
         {
+             
 
         }
         public void animacion(GameTime gameTime)

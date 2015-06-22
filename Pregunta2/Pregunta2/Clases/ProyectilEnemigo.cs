@@ -7,6 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pregunta2.Clases
 {
+    /******************************************/
+    /*              Created By                */
+    /*                                        */
+    /*          Ricardo Carrasco Soto.-       */
+    /*******************************************/ 
     class ProyectilEnemigo
     {
          public Rectangle colisionProyectil;

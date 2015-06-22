@@ -9,6 +9,11 @@ using System.Text;
 
 namespace Pregunta2.Clases
 {
+    /******************************************/
+    /*              Created By                */
+    /*                                        */
+    /*          Ricardo Carrasco Soto.-       */
+    /*******************************************/ 
     class PajaroRight
     {
         Texture2D pajaroRight,animacionActual;

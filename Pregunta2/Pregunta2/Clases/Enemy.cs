@@ -12,6 +12,11 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Pregunta2.Clases
 {
+    /******************************************/
+    /*              Created By                */
+    /*                                        */
+    /*          Ricardo Carrasco Soto.-       */
+    /*******************************************/ 
     class Enemy
     {
         //Creacion Sprit Personaje

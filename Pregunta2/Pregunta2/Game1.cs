@@ -11,9 +11,11 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Pregunta2
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
+    /******************************************/
+    /*              Created By                */                                         
+    /*                                        */
+    /*          Ricardo Carrasco Soto.-       */
+    /*******************************************/ 
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         //Inicio Juego Estados
@@ -150,7 +152,7 @@ namespace Pregunta2
             sourceRect = new Rectangle(95 * frames, 0, 100, 188);
             
         }
-      
+        //Metodo para que dispare Mr.Chicken
         public void Disparo()
         {
             if (delayHuevo >= 0)
@@ -169,7 +171,7 @@ namespace Pregunta2
                 delayHuevo = 20; 
         }
 
-
+        //Metodo que regenera los huevos de Mr.Chicken
         public void updateHuevos()
         {
             foreach (Clases.Huevo h in listaHuevosChicken)
@@ -215,19 +217,23 @@ namespace Pregunta2
                         }
                     }
                     break;
+                    //Inicio juego
                 case Estados.juego:
                     {
                         posicionChicken += velocidad;
+                        //Colision Mr.Chicken
                         Colision = new Rectangle((int)posicionChicken.X, (int)posicionChicken.Y, 50, 180);
-
+                        //Vida Mr.Chicken
                         rectVida = new Rectangle((int)posicionVida.X, (int)posicionVida.Y, vida, 25);
 
+                        //Movimiento Mr.Chicken
                         if (kb.IsKeyDown(Keys.Right))
                         {
                             posicionChicken.X += 2f;
                             animacionActual = chickenRight;
                             animacion(gameTime);
                         }
+                        //Movimiento Mr.Chicken
                         else if (kb.IsKeyDown(Keys.Left))
                         {
                             posicionChicken.X -= 2f;
@@ -237,8 +243,10 @@ namespace Pregunta2
 
                         else
                         {
+                            //Animacion Mr.Chicken
                             sourceRect = new Rectangle(100, 0, 100, 188);
                         }
+                        //Disparo Mr.Chicken
                         if (kb.IsKeyDown(Keys.Space))
                         {
                             Disparo();
@@ -253,12 +261,14 @@ namespace Pregunta2
 
                             animacion(gameTime);
                         }
+                        //Salto Mr.Chicken
                         if (kb.IsKeyDown(Keys.Up) && salto == false)
                         {
                             posicionChicken.Y -= 10f;
                             velocidad.Y = -7f;
                             salto = true;
                         }
+                        //Si salto es verdadero saltara 0.15f
                         if (salto == true)
                         {
                             float i = 1;
@@ -268,10 +278,12 @@ namespace Pregunta2
                         {
                             salto = false;
                         }
+                        //Cuando llega al suelo su velocidad es 0 y queda donde mismo partio
                         if (salto == false)
                         {
                             velocidad.Y = 0f;
                         }
+                        //Limite de pantalla
                         if (posicionChicken.X <= 0)
                         { 
                             posicionChicken.X = 0;
@@ -285,14 +297,17 @@ namespace Pregunta2
                             posicionChicken.Y = 0; 
                         }
                         if (posicionChicken.Y + animacionActual.Height >= pantallaHeight)
-                            
                             posicionChicken.Y = pantallaHeight - animacionActual.Height;
+                        /////////////////////////////////////////////////////////////////
+                        //Movimientos y creacion de enemigos, pajaros y huevos
                         pajaroLeft.Update(gameTime);
                         pajaroLeft.animacion(gameTime);
                         pajaroRight.Update(gameTime);
                         pajaroRight.animacion(gameTime);
                         crearEnemigos(gameTime);
                         updateHuevos();
+                        //Detiene la musica y pasa a estado GameOver
+                        //Cuando vida o la barra de vida es menor o igual a 0
                         if (vida <= 0 || barraVida.Width <= 0)
                         {
                             MediaPlayer.Stop();
@@ -303,6 +318,7 @@ namespace Pregunta2
                     break;
                 case Estados.GameOver:
                     {
+                        //Cierra el juego
                         if (kb.IsKeyDown(Keys.Enter))
                         {
                             Exit();  
@@ -384,8 +400,8 @@ namespace Pregunta2
         {
             if (listEnemyRight.Count() < 1)
             {
-                listEnemyRight.Add(new Clases.Enemy(Content.Load<Texture2D>("hombreRight"), new Vector2(-100, 465), Content.Load<Texture2D>("piedra")));
-                
+                //Crea a un enemigo
+                listEnemyRight.Add(new Clases.Enemy(Content.Load<Texture2D>("hombreRight"), new Vector2(-100, 465), Content.Load<Texture2D>("piedra")));               
             }
 
             for (int i = 0; i < listEnemyRight.Count; i++)
@@ -419,11 +435,13 @@ namespace Pregunta2
             
             foreach (Clases.Enemy e in listEnemyRight)
             {
+                //Colision enemigo - Mr.Chicken
                 if (e.colisionRight.Intersects(Colision))
                 {
                     vida -= 10;
                     e.isVisible = false;
                 }
+                //Colision Mr.Chicken - Enemigo cuando lanza piedra
                 for (int i = 0; i < e.listaPiedra.Count; i++)
                 {
                     if (Colision.Intersects(e.listaPiedra[i].colisionProyectil))
@@ -432,6 +450,7 @@ namespace Pregunta2
                         e.listaPiedra[i].isVisible = false;
                     }
                 }
+                //colision Huevo Mr.Chicken - Enemigo
                 for (int i = 0; i < listaHuevosChicken.Count; i++)
                 {
                     if (listaHuevosChicken[i].colisionHuevo.Intersects(e.colisionRight))

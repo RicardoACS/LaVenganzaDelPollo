@@ -10,6 +10,11 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 namespace Pregunta2.Clases
 {
+    /******************************************/
+    /*              Created By                */
+    /*                                        */
+    /*          Ricardo Carrasco Soto.-       */
+    /*******************************************/ 
     class Musica
     {
         public Song bgMusica;
